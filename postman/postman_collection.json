@@ -1,0 +1,42 @@
+{
+	"info": {
+		"_postman_id": "f4ad9d10-c54a-4cc0-8ff8-e020db9a41cc",
+		"name": "SoilFlo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5430688"
+	},
+	"item": [
+		{
+			"name": "Create Tickets",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"tickets\": [\n        {\n            \"dispatchTime\": \"2024-09-11T19:41:17.780Z\",\n            \"material\": \"Soil\"\n        },\n        {\n            \"dispatchTime\": \"2024-09-11T18:41:17.780Z\",\n            \"material\": \"Soil\"\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/v1/trucks/9931/tickets",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"trucks",
+						"9931",
+						"tickets"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
