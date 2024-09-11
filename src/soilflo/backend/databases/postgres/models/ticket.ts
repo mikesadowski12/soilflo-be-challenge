@@ -30,7 +30,7 @@ const schema = {
     allowNull: false,
   },
   material: {
-    type: DataTypes.ENUM('Soil', 'Rubble', 'Asphalt', 'Contaminated materials'),
+    type: DataTypes.ENUM('Soil'),
     allowNull: false,
   },
   number: {
