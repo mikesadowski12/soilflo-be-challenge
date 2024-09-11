@@ -11,6 +11,7 @@ import {
 import { LocalConfig } from './config';
 import { Backend } from './backend';
 import { Kernel } from './kernel';
+import { Api } from './api';
 
 function local(): Application {
   const config = new LocalConfig();
@@ -21,6 +22,8 @@ function local(): Application {
   const backend = new Backend(application);
 
   const kernel = new Kernel(application, backend);
+
+  new Api(application, backend, kernel);
 
   return application;
 }
