@@ -1,9 +1,21 @@
+import path from 'path';
+
 import {
   PostgresConnector,
   type Application,
+  readJsonFile,
 } from '../../../../common';
 
 import {
+  Site,
+  SiteOptions,
+  SiteSchema,
+  Truck,
+  TruckOptions,
+  TruckSchema,
+  Ticket,
+  TicketOptions,
+  TicketSchema,
 } from './models';
 
 class Postgres extends PostgresConnector {
@@ -19,7 +31,63 @@ class Postgres extends PostgresConnector {
    * Create and populate the database tables with the data provided from the JSON files
    */
   async init() {
+    await Promise.all([
+      this._initializeSiteModel(),
+      this._initializeTruckModel(),
+      this._initializeTicketModel(),
+    ]);
+    await this._createTables();
 
+    const [sites, trucks] = await Promise.all([
+      this._loadSitesData(),
+      this._loadTrucksData(),
+    ]);
+    await Site.bulkCreate(sites, {});
+    await Truck.bulkCreate(trucks, {});
+  }
+
+  private async _initializeSiteModel() {
+    Site.init({ ...SiteSchema }, { sequelize: this.client, tableName: 'sites', ...SiteOptions });
+  }
+
+  private async _initializeTruckModel() {
+    Truck.init({ ...TruckSchema }, { sequelize: this.client, tableName: 'trucks', ...TruckOptions });
+  }
+
+  private async _initializeTicketModel() {
+    Ticket.init({ ...TicketSchema }, { sequelize: this.client, tableName: 'tickets', ...TicketOptions });
+  }
+
+  /**
+   * Create database tables based on the models
+   * NOTE: drops previous tables and re-creates them (data will be lost)
+   */
+  private async _createTables() {
+    return this.client.sync({ force: true });
+  }
+
+  private async _loadJson(filePath: string) {
+    try {
+      const data = await readJsonFile(filePath);
+      return data;
+    } catch (error) {
+      this.log.error({ filePath, error }, 'Unable to load data from JSON file');
+      return '';
+    }
+  }
+
+  /**
+   * Load the sites data from the json file
+   */
+  private async _loadSitesData() {
+    return this._loadJson(path.join(__dirname, '../../../../../data/SitesJSONData.json'));
+  }
+
+  /**
+   * Load the trucks data from the json file
+   */
+  private async _loadTrucksData() {
+    return this._loadJson(path.join(__dirname, '../../../../../data/TrucksJSONData.json'));
   }
 }
 
