@@ -3,6 +3,7 @@
 ## Notes for reviewer
 ### Assumptions
 - I do not perform ANY data validation of the JSON files. I am assuming all data is correct and whole (100% correct), meaning no duplicates or missing information
+- Typically the `.env` file is not committed to the repo, only the `.env.example` file is included. However, I created the `.env` file and committed it to make the setup easier for you (similarly, `.env.test` is included to run the automated local tests)
 
 ## Dependencies
 | Package | Version |
