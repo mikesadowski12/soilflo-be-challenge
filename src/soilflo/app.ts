@@ -15,7 +15,7 @@ import { Api } from './api';
 
 function local(): Application {
   const config = new LocalConfig();
-  const logger = new Logger(config, 'My Application');
+  const logger = new Logger(config, 'SoilFlo API');
   const health = new Health(config, logger);
   const application = new Application(config, logger, health);
 
