@@ -29,21 +29,30 @@ class Postgres extends PostgresConnector {
 
   /**
    * Create and populate the database tables with the data provided from the JSON files
+   * Done in a transaction incase of an error (abort all)
    */
   async init() {
-    await Promise.all([
-      this._initializeSiteModel(),
-      this._initializeTruckModel(),
-      this._initializeTicketModel(),
-    ]);
-    await this._createTables();
+    const transaction = await this.client.transaction();
+    try {
+      await Promise.all([
+        this._initializeSiteModel(),
+        this._initializeTruckModel(),
+        this._initializeTicketModel(),
+      ]);
+      await this._createTables();
 
-    const [sites, trucks] = await Promise.all([
-      this._loadSitesData(),
-      this._loadTrucksData(),
-    ]);
-    await Site.bulkCreate(sites, {});
-    await Truck.bulkCreate(trucks, {});
+      const [sites, trucks] = await Promise.all([
+        this._loadSitesData(),
+        this._loadTrucksData(),
+      ]);
+      await Site.bulkCreate(sites, {});
+      await Truck.bulkCreate(trucks, {});
+      await transaction.commit();
+    } catch (error) {
+      this.log.error({ error }, 'Aborting Postgres initialization');
+      await transaction.rollback();
+      throw error;
+    }
   }
 
   private async _initializeSiteModel() {
