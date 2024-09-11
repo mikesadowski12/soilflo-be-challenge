@@ -71,16 +71,16 @@ class Api extends HttpServer {
         });
       } catch (error) {
         if (error instanceof BadRequestError) {
-          this.log.error({ error }, 'Missing/invalid required properties while building ticket handlers');
+          logger.error({ error }, 'Missing/invalid required properties while building ticket handlers');
           return new EmptyResponse({ status: 400 });
         }
 
         if (error instanceof ConflictError) {
-          this.log.error({ error }, 'Dispatch times are not unique for the creation of the requested tickets');
+          logger.error({ error }, 'Dispatch times are not unique for the creation of the requested tickets');
           return new EmptyResponse({ status: 409 });
         }
 
-        this.log.error({ error }, 'Error in tickets decorator');
+        logger.error({ error }, 'Error in tickets decorator');
         return new EmptyResponse({ status: 500 });
       }
     }
