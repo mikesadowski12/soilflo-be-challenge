@@ -9,7 +9,7 @@ import {
 } from '../common';
 
 import { LocalConfig } from './config';
-import { Backend } from './backend';
+import { Backend, Postgres } from './backend';
 import { Kernel } from './kernel';
 import { Api } from './api';
 
@@ -19,7 +19,8 @@ function local(): Application {
   const health = new Health(config, logger);
   const application = new Application(config, logger, health);
 
-  const backend = new Backend(application);
+  const postgres = new Postgres(application);
+  const backend = new Backend(application, postgres);
 
   const kernel = new Kernel(application, backend);
 
