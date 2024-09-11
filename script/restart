@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -e
+cd "$(dirname "$0")/.."
+
+SERVICE=$1
+ARGS=$2
+
+echo "==> Restarting service: $SERVICE"
+
+./script/stop $SERVICE
+./script/build $SERVICE
+./script/rm $SERVICE
+./script/up $SERVICE

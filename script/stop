@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -e
+cd "$(dirname "$0")/.."
+
+SERVICE=$1
+
+echo "==> Stopping service: $SERVICE"
+
+docker-compose \
+  stop \
+  $SERVICE

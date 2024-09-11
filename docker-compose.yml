@@ -1,0 +1,26 @@
+version: '3.9'
+networks:
+  backend:
+volumes:
+  pgdata:
+services:
+  soilflo-api:
+    container_name: soilflo-api
+    build:
+      dockerfile: ./Dockerfile.soilflo
+    networks:
+      - backend
+    ports:
+      - "8000:8000"
+  postgres:
+    image: postgres:14.5
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - backend

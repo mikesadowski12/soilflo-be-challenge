@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -e
+cd "$(dirname "$0")/.."
+
+echo "==> Bringing up: all services"
+
+docker-compose \
+  up -d

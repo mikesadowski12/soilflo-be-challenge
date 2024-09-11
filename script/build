@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -e
+cd "$(dirname "$0")/.."
+
+SERVICES=$@
+
+echo "==> Building services: $SERVICES"
+
+docker-compose \
+  build \
+  $SERVICES

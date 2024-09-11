@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -e
+cd "$(dirname "$0")/.."
+
+SERVICES=$@
+
+echo "==> Bringing up services: $SERVICES"
+
+docker-compose \
+  up -d \
+  $SERVICES

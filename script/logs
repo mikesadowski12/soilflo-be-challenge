@@ -1,0 +1,18 @@
+#!/bin/bash
+
+bold=$(tput bold)
+normal=$(tput sgr0)
+error=$(tput setaf 1)
+
+set -e
+cd "$(dirname "$0")/.."
+
+SERVICE=$1
+ARGS=$2
+
+echo "==> Getting logs for: $SERVICE"
+
+docker-compose \
+  logs \
+  $ARGS \
+  -f $SERVICE

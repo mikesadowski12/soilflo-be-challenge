@@ -4,13 +4,19 @@
   "description": "SoilFLO Interview takehome",
   "main": "index.js",
   "scripts": {
+    "start": "ts-node src/soilflo/app.ts",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.20.0"
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "pg": "^8.12.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
