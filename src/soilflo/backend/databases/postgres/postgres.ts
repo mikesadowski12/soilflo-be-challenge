@@ -16,6 +16,7 @@ import {
   Ticket,
   TicketOptions,
   TicketSchema,
+  associate,
 } from './models';
 
 class Postgres extends PostgresConnector {
@@ -39,6 +40,7 @@ class Postgres extends PostgresConnector {
         this._initializeTruckModel(),
         this._initializeTicketModel(),
       ]);
+      associate();
       await this._createTables();
 
       const [sites, trucks] = await Promise.all([

@@ -2,6 +2,9 @@ import { Site } from './site';
 import { Truck } from './truck';
 import { Ticket } from './ticket';
 
+/**
+ * Create model assocations to each other
+ */
 function associate() {
   Site.hasMany(Truck, {
     foreignKey: 'siteId',
