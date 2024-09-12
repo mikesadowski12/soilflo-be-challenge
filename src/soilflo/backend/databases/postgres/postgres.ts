@@ -49,7 +49,7 @@ class Postgres extends PostgresConnector {
     } catch (error) {
       await transaction.rollback();
       if (error instanceof UniqueConstraintError) {
-        throw new ConflictError({}, 'Dispatch times are not unique for the creation of the requested tickets');
+        throw new ConflictError({}, 'Dispatch time for a truck must be unique');
       }
       throw error;
     }

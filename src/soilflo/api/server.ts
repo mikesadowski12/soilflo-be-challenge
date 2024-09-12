@@ -6,6 +6,7 @@ import {
   type RequestOptions,
   BadRequestError,
   ConflictError,
+  JsonResponse,
 } from '../../common';
 import { type Kernel, type ApiTicket, validateDispatchTimeUniqueness } from '../kernel';
 import type { Backend } from '../backend';
@@ -72,12 +73,12 @@ class Api extends HttpServer {
       } catch (error) {
         if (error instanceof BadRequestError) {
           logger.error({ error }, 'Missing/invalid required properties while building ticket handlers');
-          return new EmptyResponse({ status: 400 });
+          return new JsonResponse({ error: error.message }, { status: 400 });
         }
 
         if (error instanceof ConflictError) {
           logger.error({ error }, 'Dispatch times are not unique for the creation of the requested tickets');
-          return new EmptyResponse({ status: 409 });
+          return new JsonResponse({ error: error.message }, { status: 409 });
         }
 
         logger.error({ error }, 'Error in tickets decorator');
@@ -95,7 +96,7 @@ class Api extends HttpServer {
     } catch (error) {
       if (error instanceof ConflictError) {
         logger.error({ error }, 'Dispatch times are not unique for the creation of the requested tickets');
-        return new EmptyResponse({ status: 409 });
+        return new JsonResponse({ error: error.message }, { status: 409 });
       }
 
       logger.error({ error }, 'Error in Create tickets handler');

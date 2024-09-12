@@ -27,7 +27,7 @@ function validateDispatchTimeUniqueness(tickets: ApiTicket[]): void {
   tickets.forEach((ticket) => {
     const dispatchTime = ticket.getDispatchTime();
     if (unique.has(dispatchTime)) {
-      throw new ConflictError({ time: dispatchTime }, 'Dispatch times are not all unique');
+      throw new ConflictError({ time: dispatchTime }, 'Dispatch time for a truck must be unique');
     }
     unique.add(dispatchTime)
   });
