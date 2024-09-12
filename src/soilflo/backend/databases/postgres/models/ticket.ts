@@ -36,7 +36,6 @@ const schema = {
   number: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    defaultValue: 0,
   },
 };
 

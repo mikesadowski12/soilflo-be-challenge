@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { Sequelize, UniqueConstraintError } from 'sequelize';
+import { Sequelize, UniqueConstraintError, Op } from 'sequelize';
 
 import {
   PostgresConnector,
@@ -30,8 +30,42 @@ class Postgres extends PostgresConnector {
   /**
    * Retrieve a list of ApiTickets from the database
    */
-  async findTickets(query: { siteId: number, startDate: Date, endDate: Date, pageNumber: number, pageSize: number }) {
-    console.log(query);
+  async findTickets(query: { siteId?: number, startDate: Date, endDate: Date, pageNumber: number, pageSize: number }) {
+    try {
+      const {
+        siteId,
+        startDate,
+        endDate,
+        pageNumber,
+        pageSize,
+      } = query;
+
+      console.log(siteId, startDate, endDate, pageNumber, pageSize);
+
+      const whereClause: any = {};
+      if (siteId !== undefined) {
+        whereClause['$Truck.siteId$'] = siteId;
+      }
+      whereClause['dispatchTime'] = { [Op.between]: [startDate, endDate] };
+      return Ticket.findAll({
+        where: whereClause,
+        include: [
+          {
+            model: Truck,
+            as: 'Truck',
+            include: [
+              {
+                model: Site,
+                as: 'Site',
+              },
+            ],
+          }
+        ]
+      });
+    } catch (error) {
+      this.log.error({ error }, 'Error occurred while finding tickets');
+      throw error;
+    }
   }
 
   /**
@@ -46,13 +80,13 @@ class Postgres extends PostgresConnector {
         include: [
           {
             model: Truck,
-            as: 'truck',
+            as: 'Truck',
             where: { id: truckId },
             attributes: [],
             include: [
               {
                 model: Site,
-                as: 'site',
+                as: 'Site',
                 attributes: [],
               },
             ],
@@ -81,6 +115,7 @@ class Postgres extends PostgresConnector {
       })), { transaction });
       await transaction.commit();
     } catch (error) {
+      this.log.error({ error }, 'Error occurred while saving tickets, aborting transaction');
       await transaction.rollback();
       if (error instanceof UniqueConstraintError) {
         throw new ConflictError({}, 'Dispatch time for a truck must be unique');

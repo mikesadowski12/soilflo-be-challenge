@@ -6,25 +6,10 @@ import { Ticket } from './ticket';
  * Create model assocations to each other
  */
 function associate() {
-  Site.hasMany(Truck, {
-    foreignKey: 'siteId',
-    as: 'trucks',
-  });
-
-  Truck.belongsTo(Site, {
-    foreignKey: 'siteId',
-    as: 'site'
-  });
-
-  Truck.hasMany(Ticket, {
-    foreignKey: 'truckId',
-    as: 'tickets',
-  });
-
-  Ticket.belongsTo(Truck, {
-    foreignKey: 'truckId',
-    as: 'truck',
-  });
+  Ticket.belongsTo(Truck, { foreignKey: 'truckId', as: 'Truck' });
+  Truck.hasMany(Ticket, { foreignKey: 'truckId', as: 'Tickets' });
+  Truck.belongsTo(Site, { foreignKey: 'siteId', as: 'Site' });
+  Site.hasMany(Truck, { foreignKey: 'siteId', as: 'Trucks' });
 }
 
 export { associate };

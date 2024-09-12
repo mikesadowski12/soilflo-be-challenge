@@ -38,7 +38,7 @@ class ApiQuery extends Query {
    * (also sets default values to uninitialized filter values)
    */
   serialize() {
-    const siteId = this.siteId || 0;
+    const siteId = this.siteId;
     const startDate = this.dateRange?.startDate || new Date(1900, 0, 1); // default startDate is January 1st, 1900
     const endDate = this.dateRange?.endDate || new Date(); // default endDate is now
     const pageNumber = this.pageNumber || 0;
