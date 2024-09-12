@@ -31,7 +31,7 @@ class PostgresConnector extends Service {
    * Initialize the database
    * (create tables, build models, load data, etc)
    */
-  async init() {
+  protected async init() {
     throw new AbstractMethod();
   }
 

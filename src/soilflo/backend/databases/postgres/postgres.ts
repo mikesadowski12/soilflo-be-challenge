@@ -86,7 +86,7 @@ class Postgres extends PostgresConnector {
    * Create and populate the database tables with the data provided from the JSON files
    * Done in a transaction incase of an error (abort all)
    */
-  async init() {
+  protected async init() {
     const transaction = await this.client.transaction();
     try {
       await Promise.all([
