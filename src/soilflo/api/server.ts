@@ -91,7 +91,47 @@ class Api extends HttpServer {
 
     return wrapped;
   }
-
+  /**
+   * @swagger
+   * /api/v1/tickets/:truckId:
+   *   post:
+   *     summary: Save a list of tickets
+   *     description: Save a list tickets to the system for a single truck
+   *     parameters:
+   *       - in: path
+   *         name: truckId
+   *         required: true
+   *         schema:
+   *           type: integer
+   *         description: The ID of the truck to create tickets for
+   *     requestBody:
+   *       required: true
+   *       content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 tickets:
+   *                   type: array
+   *                   items:
+   *                     type: object
+   *                     properties:
+   *                       dispatchTime:
+   *                         type: string
+   *                         example: "2024-09-12T19:41:17.780Z"
+   *                       material:
+   *                         type: string
+   *                         example: "Soil"
+   *     responses:
+   *       200:
+   *         description: Request was successful but there's no content to return.
+   *       400:
+   *         description: Data in request is missing/invalid
+   *       409:
+   *         description: Ticket dispatch times are not unique
+   *       500:
+   *         description: Internal server error
+   */
   private async createTickets({ logger, tickets, truckId }: RequestOptions & { truckId: number, tickets: ApiTicket[] }): Promise<HttpResponse> {
     try {
       await this.kernel.saveTickets(truckId, tickets);
@@ -238,7 +278,7 @@ class Api extends HttpServer {
    *                         example: 1
    *                       dispatchTime:
    *                         type: string
-   *                         example: "2024-09-02T19:41:17.780Z"
+   *                         example: "2024-09-11T19:41:17.780Z"
    *                       material:
    *                         type: string
    *                         example: "Soil"
