@@ -7,9 +7,34 @@
 - Typically the `.env` file is not committed to the repo, only the `.env.example` file is included. However, I created the `.env` file and committed it to make the setup easier for you (similarly, `.env.test` is included to run the automated local tests)
 - I assumed that the `dispatchTime` field in the request body is a JS Date() object (`new Date()`) string in ISO 8601 format (e.g. `2024-09-11T19:41:17.780Z`)
 - I assumed that the `dispatchTime` can be a past date as the original README only specified future date is invalid
-- I assumed from the original README that the provided response object given was only for the fetch route and NOT the post route
+- I assumed from the original README that the provided response object given was only for the get route and NOT the post route
 - I assumed that the `dispatchTime` in the response object is also a JS Date() object (`new Date()`) string in ISO 8601 format (e.g. `2024-09-11T19:41:17.780Z`)
 - Although not specified in the original README, I included pagination for the GET tickets route. It requires you to pass both the `pageNumber` and `pageSize` query parameters together or the API throws a 400 if one is missing. Otherwise it just fetches all data. I am not sure which method you preferred because it was not required to paginate but I think an API like this should have pagination.
+
+### Summary
+- Tickets for a truck can be created by hitting the POST route `http://localhost:8000/api/v1/trucks/:truckId/tickets` with a request body in the structure of:
+```javascript
+{
+    "tickets": [
+        {
+            "dispatchTime": "2024-09-11T19:41:17.780Z",
+            "material": "Soil"
+        },
+        {
+            "dispatchTime": "2024-09-11T19:41:17.780Z",
+            "material": "Soil"
+        }
+    ]
+}
+```
+- Tickets can be retrieved by hitting the GET route `http://localhost:8000/api/v1/tickets` and using filters via the query parameters (all query parameters are optional):
+  - siteId (if not provided it will search tickets in ALL sites)
+  - startDate (if not provided it will search for tickets dispatched since the beginning of time)
+  - endDate (if not provided it will search for tickets dispatched up to right now)
+  - pageNumber (if not provided it will fetch ALL tickets that meet the other criteria) (both pageNumber and pageSize need to be present in order to paginate)
+  - pageSize (if not provided it will fetch ALL tickets that meet the other criteria) (both pageNumber and pageSize need to be present in order to paginate)
+  - Example: `http://localhost:8000/api/v1/tickets?siteId=41&startDate=2024-09-11T19:41:17.780Z&endDate=2024-09-11T19:41:17.780Z&pageNumber=1&pageSize=1`
+- If you restart the API the database will reset. I did this so it was simple for you to start/stop the application.
 
 ## Usage
 1. Spin up local docker environment: run script located at `./script/up_all` to bring up Postgres and API containers (API will start on `http://localhost:8000` unless you alter the `.env` file provided)
