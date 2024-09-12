@@ -37,7 +37,7 @@
   - Example: `http://localhost:8000/api/v1/tickets?siteId=41&startDate=2024-09-11T19:41:17.780Z&endDate=2024-09-11T19:41:17.780Z&pageNumber=1&pageSize=1`
 - If you restart the API the database will reset. I did this so it was simple for you to start/stop the application.
 
-## Usage
+## Installation/Usage
 1. Spin up local docker environment: run script located at `./script/up_all` to bring up Postgres and API containers (API will start on `http://localhost:8000` unless you alter the `.env` file provided)
 2. Swagger docs available at: `http://localhost:8000/api/docs/`
 3. I have included postman scripts located in the `./postman/` directory. Feel free to use these to test the API or use any other method you wish
@@ -49,10 +49,3 @@
 | NodeJS | 22.8.0 |
 | Express | ^4.19.2 |
 
-## Installation/Usage
--
-
-## Documentation
-### API
-
-## Testing
