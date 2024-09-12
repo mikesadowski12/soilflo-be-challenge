@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"tickets\": [\n        {\n            \"dispatchTime\": \"2024-09-11T19:41:17.780Z\",\n            \"material\": \"Soil\"\n        },\n        {\n            \"dispatchTime\": \"2024-09-11T18:41:17.780Z\",\n            \"material\": \"Soil\"\n        }\n    ]\n}",
+					"raw": "{\n    \"tickets\": [\n        {\n            \"dispatchTime\": \"2024-09-11T19:41:17.780Z\",\n            \"material\": \"Soil\"\n        },\n        {\n            \"dispatchTime\": \"2024-09-11T19:41:17.780Z\",\n            \"material\": \"Soil\"\n        }\n    ]\n}\n\n// truck id 1: 9931\n// truck id 2: 41\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -21,7 +21,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8000/api/v1/trucks/9931/tickets",
+					"raw": "http://localhost:8000/api/v1/trucks/41/tickets",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -31,8 +31,53 @@
 						"api",
 						"v1",
 						"trucks",
-						"9931",
+						"41",
 						"tickets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find Tickets",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/v1/tickets?siteId=41&startDate=2024-09-11T19:41:17.780Z&endDate=2024-09-11T19:41:17.780Z",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"tickets"
+					],
+					"query": [
+						{
+							"key": "siteId",
+							"value": "41"
+						},
+						{
+							"key": "startDate",
+							"value": "2024-09-11T19:41:17.780Z"
+						},
+						{
+							"key": "endDate",
+							"value": "2024-09-11T19:41:17.780Z"
+						},
+						{
+							"key": "pageNumber",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "pageSize",
+							"value": "1",
+							"disabled": true
+						}
 					]
 				}
 			},
