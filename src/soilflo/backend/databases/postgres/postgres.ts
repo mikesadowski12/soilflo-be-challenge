@@ -30,11 +30,6 @@ class Postgres extends PostgresConnector {
 
   /**
    * Retrieve a list of ApiTickets from the database
-   *
-   * - Filters are all optional:
-   *    - siteId won't be included in WHERE clause if its not defined (search all sites)
-   *    - Date filters are defaulted in calling code (start=January 1st 1900, end=right now)
-   *    - pageNumber/pageSize must both be defined to enable pagination
    */
   async findTickets(query: { siteId?: number, startDate: Date, endDate: Date, pageNumber?: number, pageSize?: number }): Promise<TicketResult[]> {
     try {

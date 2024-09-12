@@ -10,6 +10,7 @@
 - I assumed from the original README that the provided response object given was only for the get route and NOT the post route
 - I assumed that the `dispatchTime` in the response object is also a JS Date() object (`new Date()`) string in ISO 8601 format (e.g. `2024-09-11T19:41:17.780Z`)
 - Although not specified in the original README, I included pagination for the GET tickets route. It requires you to pass both the `pageNumber` and `pageSize` query parameters together or the API throws a 400 if one is missing. Otherwise it just fetches all data. I am not sure which method you preferred because it was not required to paginate but I think an API like this should have pagination.
+- I assumed for the GET route that the ordering of the tickets does not matter. I order them by newest to oldest.
 
 ### Summary
 - Tickets for a truck can be created by hitting the POST route `http://localhost:8000/api/v1/trucks/:truckId/tickets` with a request body in the structure of:
