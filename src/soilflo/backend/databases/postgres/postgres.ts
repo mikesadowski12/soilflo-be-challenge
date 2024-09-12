@@ -70,8 +70,8 @@ class Postgres extends PostgresConnector {
             ],
           },
         ],
-        ...(limit !== undefined && { limit }), // Apply limit only if it's defined
-        ...(offset !== undefined && { offset }), // Apply offset only if it's defined
+        ...(limit !== undefined && { limit }),
+        ...(offset !== undefined && { offset }),
       });
 
       return tickets.map(ticket => ({
