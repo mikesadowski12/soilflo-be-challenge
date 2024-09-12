@@ -48,7 +48,7 @@ class Api extends HttpServer {
         }
 
         if (!rawTickets || rawTickets.length < 1) {
-          throw new BadRequestError({}, 'Array of tickets was not provided');
+          throw new BadRequestError({}, 'List of tickets was not provided');
         }
 
         const truck = await this.kernel.getTruckHandler(logger, truckId);
