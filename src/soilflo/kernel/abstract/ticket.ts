@@ -52,6 +52,33 @@ class ApiTicket extends Ticket {
       material: this.material,
     };
   }
+
+  /**
+   * Serialize the Ticket into a format that can be returned to client
+   */
+  present() {
+    const site = this.truck.getSite();
+    if (!site) {
+      throw new ApiError({}, 'Site must be defined in order to present payload');
+    }
+
+    const license = this.truck.getLicense();
+    if (!license) {
+      throw new ApiError({}, 'Truck license plate must be defined in order to present payload');
+    }
+
+    if (!this.number) {
+      throw new ApiError({}, 'Ticket number must be defined in order to present payload');
+    }
+
+    return {
+      siteName: site.getName(),
+      licensePlate: license,
+      ticketNumber: this.number,
+      ticketDispatchTime: this.dispatchTime,
+      ticketMaterial: this.material,
+    };
+  }
 }
 
 export { ApiTicket };

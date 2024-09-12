@@ -1,7 +1,7 @@
 import type { Application, DateRange } from '../../common';
 import type { Backend } from '../backend';
 import { Service, ILogger } from '../../common';
-import { ApiTruck, ApiTicket, ApiQuery } from './abstract';
+import { ApiTruck, ApiTicket, ApiQuery, ApiSite } from './abstract';
 
 class Kernel extends Service {
   private backend: Backend;
@@ -26,7 +26,16 @@ class Kernel extends Service {
     return tickets.map((ticket) =>
       this._unserializeTicket(
         query.getLogger(),
-        this._unserializeTruck(query.getLogger(), ticket.truck.id || -1, ticket.truck.license || undefined),
+        this._unserializeTruck(
+          query.getLogger(),
+          ticket.truck.id || -1,
+          ticket.truck.license || undefined,
+          this._unserializeSite(
+            query.getLogger(),
+            ticket.site.id || -1,
+            ticket.site.name || '',
+          ),
+        ),
         ticket.dispatchTime.toISOString(),
         ticket.material,
         ticket.number ? parseInt(ticket.number) : undefined,
@@ -34,8 +43,8 @@ class Kernel extends Service {
     );
   }
 
-  private _unserializeTruck(logger: ILogger, id: number, license?: string): ApiTruck {
-    return new ApiTruck(this, logger, id, license);
+  private _unserializeTruck(logger: ILogger, id: number, license?: string, site?: ApiSite): ApiTruck {
+    return new ApiTruck(this, logger, id, license, site);
   }
 
   async getTruckHandler(logger: ILogger, id: number, license?: string): Promise<ApiTruck> {
@@ -56,6 +65,14 @@ class Kernel extends Service {
 
   async getQueryHandler(logger: ILogger, siteId?: number, dateRange?: DateRange, pageNumber?: number, pageSize?: number): Promise<ApiQuery> {
     return this._unserializeQuery(logger, siteId, dateRange, pageNumber, pageSize);
+  }
+
+  private _unserializeSite(logger: ILogger, id: number, name: string): ApiSite {
+    return new ApiSite(this, logger, id, name);
+  }
+
+  async getSiteHandler(logger: ILogger, id: number, name: string): Promise<ApiSite> {
+    return this._unserializeSite(logger, id, name);
   }
 }
 

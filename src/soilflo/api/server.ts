@@ -183,8 +183,7 @@ class Api extends HttpServer {
   private async findTickets({ logger, ticketQuery }: RequestOptions & { ticketQuery: ApiQuery }): Promise<HttpResponse> {
     try {
       const tickets = await this.kernel.findTickets(ticketQuery);
-      console.log(tickets);
-      return new EmptyResponse();
+      return new JsonResponse({ tickets: tickets.map(ticket => ticket.present()) });
     } catch (error) {
       logger.error({ error }, 'Error in Find tickets handler');
       return new EmptyResponse({ status: 500 });
