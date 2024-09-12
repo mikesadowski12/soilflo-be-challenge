@@ -73,10 +73,10 @@ class ApiTicket extends Ticket {
 
     return {
       siteName: site.getName(),
-      licensePlate: license,
-      ticketNumber: this.number,
-      ticketDispatchTime: this.dispatchTime,
-      ticketMaterial: this.material,
+      truckLicensePlate: license,
+      number: this.number,
+      dispatchTime: this.dispatchTime,
+      material: this.material,
     };
   }
 }

@@ -180,6 +180,73 @@ class Api extends HttpServer {
     return wrapped;
   }
 
+  /**
+   * @swagger
+   * /api/v1/tickets:
+   *   get:
+   *     summary: Retrieve a list of tickets
+   *     description: Retrieve a list tickets from the system based on the filters provided
+   *     parameters:
+   *       - in: query
+   *         name: siteId
+   *         schema:
+   *           type: integer
+   *         description: The site ID for filtering tickets.
+   *       - in: query
+   *         name: startDate
+   *         schema:
+   *           type: string
+   *           format: date-time
+   *         description: The start date for filtering tickets.
+   *       - in: query
+   *         name: endDate
+   *         schema:
+   *           type: string
+   *           format: date-time
+   *         description: The end date for filtering tickets.
+   *       - in: query
+   *         name: pageNumber
+   *         schema:
+   *           type: integer
+   *         description: The page number for pagination.
+   *       - in: query
+   *         name: pageSize
+   *         schema:
+   *           type: integer
+   *         description: The page size for pagination.
+   *     responses:
+   *       200:
+   *         description: A list of tickets.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 tickets:
+   *                   type: array
+   *                   items:
+   *                     type: object
+   *                     properties:
+   *                       siteName:
+   *                         type: string
+   *                         example: "GEEKMOSIS"
+   *                       truckLicensePlate:
+   *                         type: string
+   *                         example: "cae96"
+   *                       number:
+   *                         type: integer
+   *                         example: 1
+   *                       dispatchTime:
+   *                         type: string
+   *                         example: "2024-09-02T19:41:17.780Z"
+   *                       material:
+   *                         type: string
+   *                         example: "Soil"
+   *       400:
+   *         description: Data in request is missing/invalid
+   *       500:
+   *         description: Internal server error
+   */
   private async findTickets({ logger, ticketQuery }: RequestOptions & { ticketQuery: ApiQuery }): Promise<HttpResponse> {
     try {
       const tickets = await this.kernel.findTickets(ticketQuery);
