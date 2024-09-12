@@ -41,7 +41,7 @@
 1. Spin up local docker environment: run script located at `./script/up_all` to bring up Postgres and API containers (API will start on `http://localhost:8000` unless you alter the `.env` file provided)
 2. Swagger docs available at: `http://localhost:8000/api/docs/`
 3. I have included postman scripts located in the `./postman/` directory. Feel free to use these to test the API or use any other method you wish
-4. Automated tests can be run via `npm run test` (`.env.test` file is included and required to run the tests as that is how the tests connects to Postgres)
+4. Automated tests can be run via `npm run test` (`.env.test` file is included and required to run the tests as that is how the tests connect to Postgres)
 
 ## Dependencies
 | Package | Version |
