@@ -41,9 +41,9 @@ class Postgres extends PostgresConnector {
       } = query;
 
       console.log(siteId, startDate, endDate, pageNumber, pageSize);
-
+      // TODO: select only needed attributes to return
       const whereClause: any = {};
-      if (siteId !== undefined) {
+      if (siteId) {
         whereClause['$Truck.siteId$'] = siteId;
       }
       whereClause['dispatchTime'] = { [Op.between]: [startDate, endDate] };
