@@ -67,7 +67,7 @@ class Postgres extends PostgresConnector {
   async saveTickets(truckId: number, tickets: { truckId: number, dispatchTime: string, material: string }[]) {
     const transaction = await this.client.transaction();
     try {
-      const currentTicketNumber = await this. _getTicketNumberForSite(truckId);
+      const currentTicketNumber = await this._getTicketNumberForSite(truckId);
       await Ticket.bulkCreate(tickets.map((ticket, i) => ({
         ...ticket,
         number: currentTicketNumber + i + 1,
