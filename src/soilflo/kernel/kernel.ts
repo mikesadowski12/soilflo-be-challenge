@@ -27,12 +27,12 @@ class Kernel extends Service {
     return this._unserializeTicket(logger, truck, dispatchTime, material);
   }
 
-  private async _unserializeQuery(logger: ILogger, siteId?: number, dateRange?: DateRange): Promise<ApiQuery> {
-    return new ApiQuery(this, logger, siteId, dateRange);
+  private async _unserializeQuery(logger: ILogger, siteId?: number, dateRange?: DateRange, pageNumber?: number, pageSize?: number): Promise<ApiQuery> {
+    return new ApiQuery(this, logger, siteId, dateRange, pageNumber, pageSize);
   }
 
-  async getQueryHandler(logger: ILogger, siteId?: number, dateRange?: DateRange): Promise<ApiQuery> {
-    return this._unserializeQuery(logger, siteId, dateRange);
+  async getQueryHandler(logger: ILogger, siteId?: number, dateRange?: DateRange, pageNumber?: number, pageSize?: number): Promise<ApiQuery> {
+    return this._unserializeQuery(logger, siteId, dateRange, pageNumber, pageSize);
   }
 }
 

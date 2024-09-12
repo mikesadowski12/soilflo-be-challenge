@@ -31,7 +31,7 @@ type RequestOptions = {
   method: string,
   path: string,
   params: { truckId?: string, siteId?: string, startDate?: string, endDate?: string },
-  query: { siteId?: string, startDate?: string, endDate?: string },
+  query: { siteId?: string, startDate?: string, endDate?: string, pageNumber?: string, pageSize?: string },
   headers: object,
   cookies: object,
   requestId: string, // request ID

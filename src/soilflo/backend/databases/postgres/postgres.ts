@@ -30,7 +30,7 @@ class Postgres extends PostgresConnector {
   /**
    * Retrieve a list of ApiTickets from the database
    */
-  async findTickets(query: { siteId: number, startDate: Date, endDate: Date }) {
+  async findTickets(query: { siteId: number, startDate: Date, endDate: Date, pageNumber: number, pageSize: number }) {
     console.log(query);
   }
 

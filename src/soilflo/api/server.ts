@@ -115,27 +115,51 @@ class Api extends HttpServer {
         startDate: undefined,
         endDate: undefined,
       };
+      let pageNumber = undefined;
+      let pageSize = undefined;
 
       try {
         const { query } = request;
         if (query && query.siteId) {
           siteId = parseInt(query.siteId);
+          if (isNaN(siteId)) {
+            throw new BadRequestError({}, '\'siteId\' query parameter must be an integer');
+          }
         }
+
         if (query && query.startDate) {
           dateRange.startDate = new Date(query.startDate);
+          if (isNaN(dateRange.startDate.getTime())) {
+            throw new BadRequestError({}, '\'startDate\' query parameter must be a valid date');
+          }
         }
+
         if (query && query.endDate) {
           dateRange.endDate = new Date(query.endDate);
+          if (isNaN(dateRange.endDate.getTime())) {
+            throw new BadRequestError({}, '\'endDate\' query parameter must be a valid date');
+          }
         }
 
-        if (dateRange && dateRange.startDate && isNaN(dateRange.startDate.getTime())) {
-          throw new BadRequestError({}, '\'startDate\' query parameter must be a valid date');
-        }
-        if (dateRange && dateRange.endDate && isNaN(dateRange.endDate.getTime())) {
-          throw new BadRequestError({}, '\'endDate\' query parameter must be a valid date');
+        if (query && query.pageNumber) {
+          pageNumber = parseInt(query.pageNumber);
+          if (isNaN(pageNumber)) {
+            throw new BadRequestError({}, '\'pageNumber\' query parameter must be an integer');
+          }
         }
 
-        const ticketQuery = await this.kernel.getQueryHandler(logger, siteId, dateRange);
+        if (query && query.pageSize) {
+          pageSize = parseInt(query.pageSize);
+          if (isNaN(pageSize)) {
+            throw new BadRequestError({}, '\'pageSize\' query parameter must be an integer');
+          }
+        }
+
+        if ((pageNumber && !pageSize) || (!pageNumber && pageSize)) {
+          throw new BadRequestError({}, 'Both \'pageNumber\' AND \'pageSize\' query parameters must be present to use pagination');
+        }
+
+        const ticketQuery = await this.kernel.getQueryHandler(logger, siteId, dateRange, pageNumber, pageSize);
 
         return handler.call(this, {
           ...request,
