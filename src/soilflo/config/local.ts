@@ -1,4 +1,4 @@
-import type { ApiDefinition, LoggerDefinition, PostgresDefinition } from  '../../common';
+import type { ApiDefinition, LoggerDefinition, PostgresDefinition, SwaggerDefinition } from  '../../common';
 
 import { envInteger, envLogLevel, envString, LogLevel } from '../../common';
 
@@ -28,6 +28,20 @@ class LocalConfig extends Config {
       username: envString('POSTGRES_USERNAME', 'myuser'),
       password: envString('POSTGRES_PASSWORD', 'mypassword'),
       db: envString('POSTGRES_DB', 'mydatabase'),
+    };
+  }
+
+  buildSwagger(): SwaggerDefinition {
+    return {
+      definition: {
+        openapi: '3.0.0',
+        info: {
+          title: 'SoilFlo API',
+          version: '1.0.0',
+          description: 'API Documentation for SoilFlo API',
+        },
+      },
+      apis: ['./src/soilflo/api/*.ts'],
     };
   }
 }

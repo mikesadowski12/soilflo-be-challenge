@@ -1,4 +1,4 @@
-import { BaseConfig, ApiDefinition, LoggerDefinition, PostgresDefinition, LogLevel, SwaggerDefinition } from  '../../common';
+import { BaseConfig, ApiDefinition, LoggerDefinition, PostgresDefinition, LogLevel } from  '../../common';
 
 class Config extends BaseConfig {
   constructor() {
@@ -29,20 +29,6 @@ class Config extends BaseConfig {
       username: 'myuser',
       password: 'mypassword',
       db: 'mydatabase',
-    };
-  }
-
-  buildSwagger(): SwaggerDefinition {
-    return {
-      definition: {
-        openapi: '3.0.0',
-        info: {
-          title: 'SoilFlo API',
-          version: '1.0.0',
-          description: 'API Documentation for SoilFlo API',
-        },
-      },
-      apis: ['./src/soilflo/api/*.ts'],
     };
   }
 }
