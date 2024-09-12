@@ -1,8 +1,8 @@
 import type { Application } from '../../common';
 import { Service } from '../../common';
 
-import type { Postgres } from './databases';
-import type { ApiTicket, ApiQuery } from '../kernel';
+import type { Postgres, TicketResult } from './databases';
+import { ApiTicket, ApiQuery } from '../kernel';
 
 class Backend extends Service {
   private postgres: Postgres;
@@ -15,17 +15,15 @@ class Backend extends Service {
   /**
    * Save a list of ApiTickets to the database for a single truck
    */
-  async saveTickets(truckId: number, tickets: ApiTicket[]) {
+  async saveTickets(truckId: number, tickets: ApiTicket[]): Promise<void> {
     return this.postgres.saveTickets(truckId, tickets.map((ticket) => ticket.serialize()));
   }
 
   /**
-   * Retrieve a list of ApiTickets from the database
+   * Retrieve a list of Tickets from the database
    */
-  async findTickets(query: ApiQuery) {
-    const tickets = await this.postgres.findTickets(query.serialize());
-    console.log('findTicketsfindTickets()', tickets);
-    return;
+  async findTickets(query: ApiQuery): Promise<TicketResult[]> {
+    return this.postgres.findTickets(query.serialize());
   }
 }
 

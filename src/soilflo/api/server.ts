@@ -53,7 +53,7 @@ class Api extends HttpServer {
           throw new BadRequestError({}, 'List of tickets was not provided');
         }
 
-        const truck = await this.kernel.getTruckHandler(logger, truckId);
+        const truck = await this.kernel.getTruckHandler(logger, parseInt(truckId));
         const tickets = await Promise.all(
           rawTickets.map(({ material, dispatchTime }) => this.kernel.getTicketHandler(logger, truck, dispatchTime, material))
         );
@@ -94,7 +94,7 @@ class Api extends HttpServer {
 
   private async createTickets({ logger, tickets, truckId }: RequestOptions & { truckId: number, tickets: ApiTicket[] }): Promise<HttpResponse> {
     try {
-      await this.backend.saveTickets(truckId, tickets);
+      await this.kernel.saveTickets(truckId, tickets);
       return new EmptyResponse();
     } catch (error) {
       if (error instanceof ConflictError) {
@@ -182,7 +182,8 @@ class Api extends HttpServer {
 
   private async findTickets({ logger, ticketQuery }: RequestOptions & { ticketQuery: ApiQuery }): Promise<HttpResponse> {
     try {
-      const tickets = await this.backend.findTickets(ticketQuery);
+      const tickets = await this.kernel.findTickets(ticketQuery);
+      console.log(tickets);
       return new EmptyResponse();
     } catch (error) {
       logger.error({ error }, 'Error in Find tickets handler');

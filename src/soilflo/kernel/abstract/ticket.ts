@@ -21,9 +21,9 @@ class ApiTicket extends Ticket {
   private truck: ApiTruck;
   private dispatchTime: string;
   private material: string;
-  private number: number;
+  private number: number|undefined;
 
-  constructor(kernel: Kernel, logger: ILogger, truck: ApiTruck, dispatchTime: string, material: string) {
+  constructor(kernel: Kernel, logger: ILogger, truck: ApiTruck, dispatchTime: string, material: string, number?: number) {
     super(kernel, logger);
     this.log.debug({
       truckId: truck.getId(),
@@ -33,7 +33,7 @@ class ApiTicket extends Ticket {
     this.truck = truck;
     this.dispatchTime = dispatchTime;
     this.material = material;
-    this.number = 0;
+    this.number = number;
 
     validateDispatchTime(this.dispatchTime);
   }

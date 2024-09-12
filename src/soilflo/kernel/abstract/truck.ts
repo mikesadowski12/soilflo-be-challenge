@@ -16,16 +16,18 @@ class Truck {
 }
 
 class ApiTruck extends Truck {
-  private id: string;
+  private id: number;
+  private license: string | undefined;
 
-  constructor(kernel: Kernel, logger: ILogger, id: string) {
+  constructor(kernel: Kernel, logger: ILogger, id: number, license?: string) {
     super(kernel, logger);
     this.log.debug({ id }, 'Building Truck object from data');
     this.id = id;
+    this.license = license;
   }
 
   getId(): number {
-    return parseInt(this.id);
+    return this.id;
   }
 }
 

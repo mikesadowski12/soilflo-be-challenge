@@ -65,16 +65,17 @@ const options = {
  */
 type TicketResult = {
   site: {
+    id: number | null,
     name: string | null,
   },
   truck: {
+    id: number | null,
     license: string | null;
   },
-  ticket: {
-    number: string | null,
-    dispatchTime: Date,
-    material: string,
-  },
+  id: number | null,
+  number: string | null,
+  dispatchTime: Date,
+  material: string,
 }
 
 export {

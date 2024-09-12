@@ -55,17 +55,17 @@ class Postgres extends PostgresConnector {
 
       const tickets = await Ticket.findAll({
         where: whereClause,
-        attributes: ['number', 'dispatchTime', 'material'],
+        attributes: ['id', 'number', 'dispatchTime', 'material'],
         include: [
           {
             model: Truck,
             as: 'Truck',
-            attributes: ['license'],
+            attributes: ['id', 'license'],
             include: [
               {
                 model: Site,
                 as: 'Site',
-                attributes: ['name'],
+                attributes: ['id', 'name'],
               },
             ],
           },
@@ -76,16 +76,17 @@ class Postgres extends PostgresConnector {
 
       return tickets.map(ticket => ({
         site: {
+          id: ticket.Truck?.Site?.id ?? null,
           name: ticket.Truck?.Site?.name ?? null,
         },
         truck: {
+          id: ticket.Truck?.id ?? null,
           license: ticket.Truck?.license ?? null,
         },
-        ticket: {
-          number: ticket.number,
-          dispatchTime: ticket.dispatchTime,
-          material: ticket.material
-        }
+        id: ticket.id,
+        number: ticket.number,
+        dispatchTime: ticket.dispatchTime,
+        material: ticket.material,
       }));
     } catch (error) {
       this.log.error({ error }, 'Error occurred while finding tickets');
@@ -95,6 +96,7 @@ class Postgres extends PostgresConnector {
 
   /**
    * Use truckId to find the highest number of a ticket (current ticket number) for a site
+   *
    * - Left joins all 3 tables together to filter only the tickets for a site
    * - Fetches maximum number from the tickets for a site
    * - 'number' column on tickets table is indexed to improve query performance

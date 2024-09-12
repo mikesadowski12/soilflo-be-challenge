@@ -51,6 +51,10 @@ class ApiQuery extends Query {
       pageSize,
     };
   }
+
+  getLogger(): ILogger {
+    return this.log;
+  }
 }
 
 export { ApiQuery };

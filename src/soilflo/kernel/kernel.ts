@@ -11,23 +11,46 @@ class Kernel extends Service {
     this.backend = backend;
   }
 
-  private async _unserializeTruck(logger: ILogger, id: string): Promise<ApiTruck> {
-    return new ApiTruck(this, logger, id);
+  /**
+   * Save a list of ApiTickets to the database for a single truck
+   */
+  async saveTickets(truckId: number, tickets: ApiTicket[]): Promise<void> {
+    return this.backend.saveTickets(truckId, tickets);
   }
 
-  async getTruckHandler(logger: ILogger, id: string): Promise<ApiTruck> {
-    return this._unserializeTruck(logger, id);
+  /**
+   * Retrieve a list of Tickets from the database
+   */
+  async findTickets(query: ApiQuery): Promise<ApiTicket[]> {
+    const tickets = await this.backend.findTickets(query);
+    return tickets.map((ticket) =>
+      this._unserializeTicket(
+        query.getLogger(),
+        this._unserializeTruck(query.getLogger(), ticket.truck.id || -1, ticket.truck.license || undefined),
+        ticket.dispatchTime.toDateString(),
+        ticket.material,
+        ticket.number ? parseInt(ticket.number) : undefined,
+      ),
+    );
   }
 
-  private async _unserializeTicket(logger: ILogger, truck: ApiTruck, dispatchTime: string, material: string): Promise<ApiTicket> {
-    return new ApiTicket(this, logger, truck, dispatchTime, material);
+  private _unserializeTruck(logger: ILogger, id: number, license?: string): ApiTruck {
+    return new ApiTruck(this, logger, id, license);
   }
 
-  async getTicketHandler(logger: ILogger, truck: ApiTruck, dispatchTime: string, material: string): Promise<ApiTicket> {
-    return this._unserializeTicket(logger, truck, dispatchTime, material);
+  async getTruckHandler(logger: ILogger, id: number, license?: string): Promise<ApiTruck> {
+    return this._unserializeTruck(logger, id, license);
   }
 
-  private async _unserializeQuery(logger: ILogger, siteId?: number, dateRange?: DateRange, pageNumber?: number, pageSize?: number): Promise<ApiQuery> {
+  private _unserializeTicket(logger: ILogger, truck: ApiTruck, dispatchTime: string, material: string, number?: number): ApiTicket {
+    return new ApiTicket(this, logger, truck, dispatchTime, material, number);
+  }
+
+  async getTicketHandler(logger: ILogger, truck: ApiTruck, dispatchTime: string, material: string, number?: number): Promise<ApiTicket> {
+    return this._unserializeTicket(logger, truck, dispatchTime, material, number);
+  }
+
+  private _unserializeQuery(logger: ILogger, siteId?: number, dateRange?: DateRange, pageNumber?: number, pageSize?: number): ApiQuery {
     return new ApiQuery(this, logger, siteId, dateRange, pageNumber, pageSize);
   }
 
