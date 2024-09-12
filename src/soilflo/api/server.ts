@@ -182,7 +182,6 @@ class Api extends HttpServer {
 
   private async findTickets({ logger, ticketQuery }: RequestOptions & { ticketQuery: ApiQuery }): Promise<HttpResponse> {
     try {
-      // TODO: paginate the results perhaps??
       const tickets = await this.backend.findTickets(ticketQuery);
       return new EmptyResponse();
     } catch (error) {
