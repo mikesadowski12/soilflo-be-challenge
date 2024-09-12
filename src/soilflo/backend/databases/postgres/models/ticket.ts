@@ -8,6 +8,8 @@ class Ticket extends Model {
   public dispatchTime!: Date;
   public material!: string;
   public number!: string;
+
+  public Truck?: Truck;
 }
 
 const schema = {
@@ -36,6 +38,7 @@ const schema = {
   number: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    defaultValue: 0,
   },
 };
 
@@ -57,8 +60,26 @@ const options = {
   ],
 };
 
+/**
+ * Structure of a ticket when returned from the DB
+ */
+type TicketResult = {
+  site: {
+    name: string | null,
+  },
+  truck: {
+    license: string | null;
+  },
+  ticket: {
+    number: string | null,
+    dispatchTime: Date,
+    material: string,
+  },
+}
+
 export {
   Ticket,
   schema as TicketSchema,
   options as TicketOptions,
+  TicketResult,
 };

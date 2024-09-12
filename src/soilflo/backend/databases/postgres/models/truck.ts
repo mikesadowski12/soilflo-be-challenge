@@ -6,6 +6,8 @@ class Truck extends Model {
   public id!: number;
   public siteId!: number;
   public license!: string;
+
+  public Site?: Site;
 }
 
 const schema = {

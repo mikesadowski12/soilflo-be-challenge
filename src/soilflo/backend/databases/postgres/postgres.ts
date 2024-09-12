@@ -20,6 +20,7 @@ import {
   TicketOptions,
   TicketSchema,
   associate,
+  TicketResult,
 } from './models';
 
 class Postgres extends PostgresConnector {
@@ -30,7 +31,7 @@ class Postgres extends PostgresConnector {
   /**
    * Retrieve a list of ApiTickets from the database
    */
-  async findTickets(query: { siteId?: number, startDate: Date, endDate: Date, pageNumber: number, pageSize: number }) {
+  async findTickets(query: { siteId?: number, startDate: Date, endDate: Date, pageNumber: number, pageSize: number }): Promise<TicketResult[]> {
     try {
       const {
         siteId,
@@ -39,29 +40,44 @@ class Postgres extends PostgresConnector {
         pageNumber,
         pageSize,
       } = query;
-
-      console.log(siteId, startDate, endDate, pageNumber, pageSize);
-      // TODO: select only needed attributes to return
-      const whereClause: any = {};
+      const whereClause: any = {}; // eslint-disable-line @typescript-eslint/no-explicit-any
+      whereClause['dispatchTime'] = { [Op.between]: [startDate, endDate] };
       if (siteId) {
         whereClause['$Truck.siteId$'] = siteId;
       }
-      whereClause['dispatchTime'] = { [Op.between]: [startDate, endDate] };
-      return Ticket.findAll({
+
+      const tickets = await Ticket.findAll({
         where: whereClause,
+        attributes: ['number', 'dispatchTime', 'material'],
         include: [
           {
             model: Truck,
             as: 'Truck',
+            attributes: ['license'],
             include: [
               {
                 model: Site,
                 as: 'Site',
+                attributes: ['name'],
               },
             ],
           }
         ]
       });
+
+      return tickets.map(ticket => ({
+        site: {
+          name: ticket.Truck?.Site?.name ?? null,
+        },
+        truck: {
+          license: ticket.Truck?.license ?? null,
+        },
+        ticket: {
+          number: ticket.number,
+          dispatchTime: ticket.dispatchTime,
+          material: ticket.material
+        }
+      }));
     } catch (error) {
       this.log.error({ error }, 'Error occurred while finding tickets');
       throw error;
