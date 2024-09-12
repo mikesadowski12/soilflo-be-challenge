@@ -1,9 +1,12 @@
 import path from 'path';
 
+import { UniqueConstraintError } from 'sequelize';
+
 import {
   PostgresConnector,
   type Application,
   readJsonFile,
+  ConflictError,
 } from '../../../../common';
 
 import {
@@ -25,7 +28,31 @@ class Postgres extends PostgresConnector {
   }
 
   async saveTickets(tickets: { truckId: number, dispatchTime: string, material: string }[]) {
-    console.log(tickets);
+    const transaction = await this.client.transaction();
+    try {
+      // TODO:
+      // need to fix this query to count the ticket number for a SITE.
+      // index foreign keys
+      // join tickets table to truck table on truckId to get the siteId
+      // get the max count of ticket number for that siteId
+      // stick the new count onto each of the objects before saving
+
+
+      // const currentNumber = await Ticket.max('number', { transaction }) as number || 0;
+      // const dataWithCount = tickets.map((ticket, i) => ({
+      //   ...ticket,
+      //   // number: currentNumber + i + 1,
+      // }));
+      // console.log(dataWithCount);
+      await Ticket.bulkCreate(tickets, { transaction });
+      await transaction.commit();
+    } catch (error) {
+      await transaction.rollback();
+      if (error instanceof UniqueConstraintError) {
+        throw new ConflictError({}, 'Dispatch times are not unique for the creation of the requested tickets');
+      }
+      throw error;
+    }
   }
 
   /**
