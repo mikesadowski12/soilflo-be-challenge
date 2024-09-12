@@ -28,6 +28,13 @@ class Postgres extends PostgresConnector {
   }
 
   /**
+   * Retrieve a list of ApiTickets from the database
+   */
+  async findTickets(query: { siteId: number, startDate: Date, endDate: Date }) {
+    console.log(query);
+  }
+
+  /**
    * Use truckId to find the highest number of a ticket (current ticket number) for a site
    * - Left joins all 3 tables together to filter only the tickets for a site
    * - Fetches maximum number from the tickets for a site
@@ -64,7 +71,7 @@ class Postgres extends PostgresConnector {
   /**
    * Save a list of Tickets to the database for a single truck
    */
-  async saveTickets(truckId: number, tickets: { truckId: number, dispatchTime: string, material: string }[]) {
+  async saveTickets(truckId: number, tickets: { truckId: number, dispatchTime: string, material: string }[]): Promise<void> {
     const transaction = await this.client.transaction();
     try {
       const currentTicketNumber = await this._getTicketNumberForSite(truckId);

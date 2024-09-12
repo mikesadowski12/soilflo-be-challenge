@@ -30,8 +30,8 @@ type HttpResponseOptions = {
 type RequestOptions = {
   method: string,
   path: string,
-  params: { truckId?: string },
-  query: object,
+  params: { truckId?: string, siteId?: string, startDate?: string, endDate?: string },
+  query: { siteId?: string, startDate?: string, endDate?: string },
   headers: object,
   cookies: object,
   requestId: string, // request ID

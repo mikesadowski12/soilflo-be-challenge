@@ -7,8 +7,9 @@ import {
   BadRequestError,
   ConflictError,
   JsonResponse,
+  DateRange,
 } from '../../common';
-import { type Kernel, type ApiTicket, validateDispatchTimeUniqueness } from '../kernel';
+import { type Kernel, type ApiTicket, type ApiQuery, validateDispatchTimeUniqueness } from '../kernel';
 import type { Backend } from '../backend';
 
 class Api extends HttpServer {
@@ -26,9 +27,10 @@ class Api extends HttpServer {
 
   definition() {
     this.route('POST', '/api/v1/trucks/:truckId/tickets', this.$tickets(this.createTickets));
+    this.route('GET', '/api/v1/tickets', this.$query(this.findTickets));
   }
 
-  $tickets(handler: (_: RequestOptions & { truckId: number, tickets: ApiTicket[] }) => Promise<HttpResponse>) {
+  private $tickets(handler: (_: RequestOptions & { truckId: number, tickets: ApiTicket[] }) => Promise<HttpResponse>) {
     const wrapped = async (request: RequestOptions) => {
       const logger = this.log;
       let truckId;
@@ -90,7 +92,7 @@ class Api extends HttpServer {
     return wrapped;
   }
 
-  async createTickets({ logger, tickets, truckId }: RequestOptions & { truckId: number, tickets: ApiTicket[] }): Promise<HttpResponse> {
+  private async createTickets({ logger, tickets, truckId }: RequestOptions & { truckId: number, tickets: ApiTicket[] }): Promise<HttpResponse> {
     try {
       await this.backend.saveTickets(truckId, tickets);
       return new EmptyResponse();
@@ -101,6 +103,66 @@ class Api extends HttpServer {
       }
 
       logger.error({ error }, 'Error in Create tickets handler');
+      return new EmptyResponse({ status: 500 });
+    }
+  }
+
+  private $query(handler: (_: RequestOptions & { ticketQuery: ApiQuery }) => Promise<HttpResponse>) {
+    const wrapped = async (request: RequestOptions & { ticketQuery: ApiQuery }) => {
+      const logger = this.log;
+      let siteId = undefined;
+      const dateRange: DateRange = {
+        startDate: undefined,
+        endDate: undefined,
+      };
+
+      try {
+        const { query } = request;
+        if (query && query.siteId) {
+          siteId = parseInt(query.siteId);
+        }
+        if (query && query.startDate) {
+          dateRange.startDate = new Date(query.startDate);
+        }
+        if (query && query.endDate) {
+          dateRange.endDate = new Date(query.endDate);
+        }
+
+        if (dateRange && dateRange.startDate && isNaN(dateRange.startDate.getTime())) {
+          throw new BadRequestError({}, '\'startDate\' query parameter must be a valid date');
+        }
+        if (dateRange && dateRange.endDate && isNaN(dateRange.endDate.getTime())) {
+          throw new BadRequestError({}, '\'endDate\' query parameter must be a valid date');
+        }
+
+        const ticketQuery = await this.kernel.getQueryHandler(logger, siteId, dateRange);
+
+        return handler.call(this, {
+          ...request,
+          logger,
+          ticketQuery,
+        });
+      } catch (error) {
+        if (error instanceof BadRequestError) {
+          logger.error({ error }, 'Missing/invalid required properties while building query handler');
+          return new JsonResponse({ error: error.message }, { status: 400 });
+        }
+
+        logger.error({ error }, 'Error in query decorator');
+        return new EmptyResponse({ status: 500 });
+      }
+    }
+
+    return wrapped;
+  }
+
+  private async findTickets({ logger, ticketQuery }: RequestOptions & { ticketQuery: ApiQuery }): Promise<HttpResponse> {
+    try {
+      // TODO: paginate the results perhaps??
+      const tickets = await this.backend.findTickets(ticketQuery);
+      return new EmptyResponse();
+    } catch (error) {
+      logger.error({ error }, 'Error in Find tickets handler');
       return new EmptyResponse({ status: 500 });
     }
   }

@@ -1,7 +1,7 @@
-import type { Application } from '../../common';
+import type { Application, DateRange } from '../../common';
 import type { Backend } from '../backend';
 import { Service, ILogger } from '../../common';
-import { ApiTruck, ApiTicket } from './abstract';
+import { ApiTruck, ApiTicket, ApiQuery } from './abstract';
 
 class Kernel extends Service {
   private backend: Backend;
@@ -25,6 +25,14 @@ class Kernel extends Service {
 
   async getTicketHandler(logger: ILogger, truck: ApiTruck, dispatchTime: string, material: string): Promise<ApiTicket> {
     return this._unserializeTicket(logger, truck, dispatchTime, material);
+  }
+
+  private async _unserializeQuery(logger: ILogger, siteId?: number, dateRange?: DateRange): Promise<ApiQuery> {
+    return new ApiQuery(this, logger, siteId, dateRange);
+  }
+
+  async getQueryHandler(logger: ILogger, siteId?: number, dateRange?: DateRange): Promise<ApiQuery> {
+    return this._unserializeQuery(logger, siteId, dateRange);
   }
 }
 
