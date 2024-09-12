@@ -27,7 +27,7 @@ class Kernel extends Service {
       this._unserializeTicket(
         query.getLogger(),
         this._unserializeTruck(query.getLogger(), ticket.truck.id || -1, ticket.truck.license || undefined),
-        ticket.dispatchTime.toDateString(),
+        ticket.dispatchTime.toISOString(),
         ticket.material,
         ticket.number ? parseInt(ticket.number) : undefined,
       ),
