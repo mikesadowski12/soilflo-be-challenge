@@ -48,7 +48,12 @@ const options = {
       fields: ['truckId', 'dispatchTime'],
     },
     {
-      fields: ['truckId'],
+      unique: true,
+      fields: ['truckId', 'number'],
+    },
+    {
+      unique: true,
+      fields: ['number'],
     },
   ],
 };

@@ -11,6 +11,11 @@ function associate() {
     as: 'trucks',
   });
 
+  Truck.belongsTo(Site, {
+    foreignKey: 'siteId',
+    as: 'site'
+  });
+
   Truck.hasMany(Ticket, {
     foreignKey: 'truckId',
     as: 'tickets',

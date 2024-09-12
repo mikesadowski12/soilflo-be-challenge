@@ -28,7 +28,7 @@ class Api extends HttpServer {
     this.route('POST', '/api/v1/trucks/:truckId/tickets', this.$tickets(this.createTickets));
   }
 
-  $tickets(handler: (_: RequestOptions & { tickets: ApiTicket[] }) => Promise<HttpResponse>) {
+  $tickets(handler: (_: RequestOptions & { truckId: number, tickets: ApiTicket[] }) => Promise<HttpResponse>) {
     const wrapped = async (request: RequestOptions) => {
       const logger = this.log;
       let truckId;
@@ -68,6 +68,7 @@ class Api extends HttpServer {
         return handler.call(this, {
           ...request,
           logger,
+          truckId: parseInt(truckId),
           tickets,
         });
       } catch (error) {
@@ -89,9 +90,9 @@ class Api extends HttpServer {
     return wrapped;
   }
 
-  async createTickets({ logger, tickets }: RequestOptions & { tickets: ApiTicket[] }): Promise<HttpResponse> {
+  async createTickets({ logger, tickets, truckId }: RequestOptions & { truckId: number, tickets: ApiTicket[] }): Promise<HttpResponse> {
     try {
-      await this.backend.saveTickets(tickets);
+      await this.backend.saveTickets(truckId, tickets);
       return new EmptyResponse();
     } catch (error) {
       if (error instanceof ConflictError) {

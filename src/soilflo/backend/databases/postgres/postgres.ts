@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { UniqueConstraintError } from 'sequelize';
+import { Sequelize, UniqueConstraintError } from 'sequelize';
 
 import {
   PostgresConnector,
@@ -27,24 +27,51 @@ class Postgres extends PostgresConnector {
     super(application);
   }
 
-  async saveTickets(tickets: { truckId: number, dispatchTime: string, material: string }[]) {
+  /**
+   * Use truckId to find the highest number of a ticket (current ticket number) for a site
+   * - Left joins all 3 tables together to filter only the tickets for a site
+   * - Fetches maximum number from the tickets for a site
+   * - 'number' column on tickets table is indexed to improve query performance
+   */
+  private async _getTicketNumberForSite(truckId: number): Promise<number> {
+    try {
+      const result = await Ticket.findOne({
+        include: [
+          {
+            model: Truck,
+            as: 'truck',
+            where: { id: truckId },
+            attributes: [],
+            include: [
+              {
+                model: Site,
+                as: 'site',
+                attributes: [],
+              },
+            ],
+          },
+        ],
+        attributes: [[Sequelize.fn('MAX', Sequelize.col('Ticket.number')), 'number']],
+        raw: true, // use raw result to prevent group by error
+      });
+      return result && result.number ? parseInt(result.number) : 0;
+    } catch (error) {
+      this.log.error({ truckId, error }, 'Error fetching max ticket number for site');
+      throw error;
+    }
+  }
+
+  /**
+   * Save a list of Tickets to the database for a single truck
+   */
+  async saveTickets(truckId: number, tickets: { truckId: number, dispatchTime: string, material: string }[]) {
     const transaction = await this.client.transaction();
     try {
-      // TODO:
-      // need to fix this query to count the ticket number for a SITE.
-      // index foreign keys
-      // join tickets table to truck table on truckId to get the siteId
-      // get the max count of ticket number for that siteId
-      // stick the new count onto each of the objects before saving
-
-
-      // const currentNumber = await Ticket.max('number', { transaction }) as number || 0;
-      // const dataWithCount = tickets.map((ticket, i) => ({
-      //   ...ticket,
-      //   // number: currentNumber + i + 1,
-      // }));
-      // console.log(dataWithCount);
-      await Ticket.bulkCreate(tickets, { transaction });
+      const currentTicketNumber = await this. _getTicketNumberForSite(truckId);
+      await Ticket.bulkCreate(tickets.map((ticket, i) => ({
+        ...ticket,
+        number: currentTicketNumber + i + 1,
+      })), { transaction });
       await transaction.commit();
     } catch (error) {
       await transaction.rollback();

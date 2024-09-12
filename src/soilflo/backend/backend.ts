@@ -13,10 +13,10 @@ class Backend extends Service {
   }
 
   /**
-   * Save a list of ApiTickets to the database
+   * Save a list of ApiTickets to the database for a single truck
    */
-  async saveTickets(tickets: ApiTicket[]) {
-    return this.postgres.saveTickets(tickets.map((ticket) => ticket.serialize()));
+  async saveTickets(truckId: number, tickets: ApiTicket[]) {
+    return this.postgres.saveTickets(truckId, tickets.map((ticket) => ticket.serialize()));
   }
 }
 
