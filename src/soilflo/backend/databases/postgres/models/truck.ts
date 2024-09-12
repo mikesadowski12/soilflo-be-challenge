@@ -31,6 +31,11 @@ const schema = {
 
 const options = {
   modelName: 'Truck',
+  indexes: [
+    {
+      fields: ['siteId'],
+    },
+  ],
 };
 
 export {
