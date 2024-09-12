@@ -41,8 +41,8 @@ class ApiQuery extends Query {
     const siteId = this.siteId;
     const startDate = this.dateRange?.startDate || new Date(1900, 0, 1); // default startDate is January 1st, 1900
     const endDate = this.dateRange?.endDate || new Date(); // default endDate is now
-    const pageNumber = this.pageNumber || 0;
-    const pageSize = this.pageSize || 0;
+    const pageNumber = this.pageNumber;
+    const pageSize = this.pageSize;
     return {
       siteId,
       startDate,

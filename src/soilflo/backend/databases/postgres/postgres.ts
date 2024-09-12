@@ -31,7 +31,7 @@ class Postgres extends PostgresConnector {
   /**
    * Retrieve a list of ApiTickets from the database
    */
-  async findTickets(query: { siteId?: number, startDate: Date, endDate: Date, pageNumber: number, pageSize: number }): Promise<TicketResult[]> {
+  async findTickets(query: { siteId?: number, startDate: Date, endDate: Date, pageNumber?: number, pageSize?: number }): Promise<TicketResult[]> {
     try {
       const {
         siteId,
@@ -41,9 +41,16 @@ class Postgres extends PostgresConnector {
         pageSize,
       } = query;
       const whereClause: any = {}; // eslint-disable-line @typescript-eslint/no-explicit-any
+      let limit: number | undefined;
+      let offset: number | undefined;
+
       whereClause['dispatchTime'] = { [Op.between]: [startDate, endDate] };
       if (siteId) {
         whereClause['$Truck.siteId$'] = siteId;
+      }
+      if (pageNumber && pageSize) {
+        limit = pageSize;
+        offset = (pageNumber - 1) * pageSize;
       }
 
       const tickets = await Ticket.findAll({
@@ -61,8 +68,10 @@ class Postgres extends PostgresConnector {
                 attributes: ['name'],
               },
             ],
-          }
-        ]
+          },
+        ],
+        ...(limit !== undefined && { limit }), // Apply limit only if it's defined
+        ...(offset !== undefined && { offset }), // Apply offset only if it's defined
       });
 
       return tickets.map(ticket => ({
