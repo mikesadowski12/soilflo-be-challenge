@@ -11,6 +11,7 @@ class LocalConfig extends Config {
       port: envString('API_PORT', '8000'),
       bind: envString('API_BIND', '127.0.0.1'),
       url: envString('API_DOMAIN', 'http://127.0.0.1:8000'),
+      deployment: envString('DEPLOYMENT', 'local'),
     };
   }
 

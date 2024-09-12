@@ -5,6 +5,7 @@ type ApiDefinition = {
   port: string;
   bind: string;
   url: string;
+  deployment: string;
 }
 
 type LoggerDefinition = {
@@ -19,14 +20,28 @@ type PostgresDefinition = {
   db: string,
 }
 
+type SwaggerDefinition = {
+  definition: {
+    openapi: string,
+    info: {
+      title: string,
+      version: string,
+      description: string,
+    },
+  },
+  apis: string[],
+}
+
 class BaseConfig {
   protected api: ApiDefinition;
   protected logger: LoggerDefinition;
   protected postgres?: PostgresDefinition;
+  protected swagger?: SwaggerDefinition;
 
   constructor() {
     this.api = this.buildApi();
     this.logger = this.buildLogger();
+    this.swagger = this.buildSwagger();
 
     // Optional properties
     this.postgres = { host: '', port: 0, username: '', password: '', db: '' };
@@ -38,12 +53,27 @@ class BaseConfig {
       port: '8000',
       bind: '127.0.0.1',
       url: 'http://127.0.0.1:8000',
+      deployment: 'local',
     };
   }
 
   buildLogger(): LoggerDefinition {
     return {
       level: LogLevel.INFO,
+    };
+  }
+
+  buildSwagger(): SwaggerDefinition {
+    return {
+      definition: {
+        openapi: '',
+        info: {
+          title: '',
+          version: '',
+          description: '',
+        },
+      },
+      apis: [],
     };
   }
 
@@ -58,6 +88,10 @@ class BaseConfig {
   getPostgres(): PostgresDefinition | undefined {
     return this.postgres;
   }
+
+  getSwagger(): SwaggerDefinition | undefined{
+    return this.swagger;
+  }
 }
 
 export {
@@ -65,4 +99,5 @@ export {
   ApiDefinition,
   LoggerDefinition,
   PostgresDefinition,
+  SwaggerDefinition,
 };

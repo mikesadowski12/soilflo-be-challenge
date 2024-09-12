@@ -3,9 +3,11 @@
 import { randomUUID } from 'crypto';
 
 import type { Server } from 'http';
-import express, { Request, Response, Express, NextFunction } from 'express';
+import express, { Request, Response, Express, NextFunction, } from 'express';
+import swaggerJsDoc from 'swagger-jsdoc';
+import swaggerUI from 'swagger-ui-express';
 
-import { ApiDefinition, Application, Service } from '../application';
+import { ApiDefinition, Application, Service, SwaggerDefinition } from '../application';
 import { AbstractMethod, ApiError } from '../internals';
 import type { ILogger } from '../application/logger';
 
@@ -92,17 +94,27 @@ class HttpServer extends Service {
   private config: ApiDefinition;
   private app: Express;
   private server: Server | null;
+  private swagger?: SwaggerDefinition;
 
   constructor(application: Application, options: HttpServerOptions) {
     super(application);
     const { host, port } = options;
     this.options = { host, port };
     this.config = application.config.getApi();
+    this.swagger = application.config.getSwagger();
     this.server = null;
 
     this.app = express();
-    this.app.use(express.json()); // Middleware to parse JSON
+    this.app.use(express.json());
     this.app.use(addRequestId);
+    if (this.swagger && this.config.deployment === 'local') {
+      this.app.use(
+        '/api/docs',
+        swaggerUI.serve,
+        swaggerUI.setup(swaggerJsDoc(this.swagger))
+      );
+    }
+
     this.definition();
   }
 
