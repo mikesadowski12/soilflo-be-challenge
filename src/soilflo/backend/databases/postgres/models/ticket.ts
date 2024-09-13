@@ -55,7 +55,6 @@ const options = {
       fields: ['truckId', 'number'],
     },
     {
-      unique: true,
       fields: ['number'],
     },
   ],
