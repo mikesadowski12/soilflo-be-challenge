@@ -43,7 +43,7 @@
 2. Swagger docs available at: `http://localhost:8000/api/docs/`
 3. I have included postman scripts located in the `./postman/` directory. Feel free to use these to test the API or use any other method you wish
 4. Automated tests can be run via `npm install` (Node verison 22.8.0) and `npm run test`
-  - NOTE: the tests rely on the 2 containers running (API and Postgres). The data in the tables will affect the tests. This was done to save time, ideally the tests would have a separate DB and separate API spun up for them.
+  - NOTE: the tests rely on the 2 containers running (API and Postgres). The data in the tables will affect the tests. This was done to save time and simplify everything, ideally the tests would have a separate DB and separate API spun up for them.
 
 ## Dependencies
 | Package | Version |
