@@ -93,6 +93,7 @@ class Api extends HttpServer {
 
     return wrapped;
   }
+
   /**
    * @swagger
    * /api/v1/tickets/:truckId:
