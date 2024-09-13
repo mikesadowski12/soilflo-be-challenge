@@ -44,6 +44,7 @@
 3. I have included postman scripts located in the `./postman/` directory. Feel free to use these to test the API or use any other method you wish
 4. Automated tests can be run via `npm install` (Node verison 22.8.0) and `npm run test`
   - NOTE: the tests rely on the 2 containers running (API and Postgres). The data in the tables will affect the tests. This was done to save time and simplify everything, ideally the tests would have a separate DB and separate API spun up for them.
+  - NOTE: the integration tests add data to the tables, so you will get errors if you run them twice in a row without resetting the database. Again, ideally the database would be cleaned between each run. I did it this way to save time.
 
 ## Dependencies
 | Package | Version |

@@ -31,15 +31,15 @@ function validateMaterial(material: string) {
  * Loop through the array of tickets in the request body
  * and validate their structure/contents exist
  */
-function validateTicketsRequestBody(tickets: { dispatchTime: string, material: string }[]) {
+function validateTicketsRequestBody(tickets: { dispatchTime: unknown, material: unknown }[]) {
   tickets.forEach((ticket) => {
     if (!ticket.dispatchTime || typeof ticket.dispatchTime !== 'string') {
-      throw new BadRequestError({ time: ticket.dispatchTime }, 'Dispatch time is missing or not a valid value');
+      throw new BadRequestError({ time: String(ticket.dispatchTime) }, 'Dispatch time is missing or not a valid value');
     }
     validateDispatchTime(ticket.dispatchTime)
 
     if (!ticket.material || typeof ticket.material !== 'string') {
-      throw new BadRequestError({ material: ticket.material }, 'Material is missing or not a valid value');
+      throw new BadRequestError({ material: String(ticket.material) }, 'Material is missing or not a valid value');
     }
     validateMaterial(ticket.material);
   });
