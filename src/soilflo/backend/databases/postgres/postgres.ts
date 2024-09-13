@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { Sequelize, UniqueConstraintError, Op } from 'sequelize';
+import { Sequelize, UniqueConstraintError, Op, literal } from 'sequelize';
 
 import {
   PostgresConnector,
@@ -97,8 +97,8 @@ class Postgres extends PostgresConnector {
   /**
    * Use truckId to find the highest number of a ticket (current ticket number) for a site
    *
-   * - Left joins all 3 tables together to filter only the tickets for a site
-   * - Fetches maximum number from the tickets for a site
+   * - Left outter joins all 3 tables to include all tickets for the siteId of the truckId given
+   * - Fetches maximum number from the tickets
    * - 'number' column on tickets table is indexed to improve query performance
    */
   private async _getTicketNumberForSite(truckId: number): Promise<number> {
@@ -108,7 +108,15 @@ class Postgres extends PostgresConnector {
           {
             model: Truck,
             as: 'Truck',
-            where: { id: truckId },
+            where: {
+              siteId: { // subquery to get the siteId for the truck
+                [Op.in]: literal(`(
+                  SELECT "siteId"
+                  FROM "trucks"
+                  WHERE "id" = ${truckId}
+                )`)
+              }
+            },
             attributes: [],
             include: [
               {
