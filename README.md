@@ -2,9 +2,10 @@
 
 ## Notes for reviewer
 ### Assumptions
+- I am assuming you have Docker installed as it was listed on the job description in the job posting
 - I do not perform ANY data validation of the JSON files. I am assuming all data is correct and whole (100% correct), meaning no duplicates or missing information
 - Starting/re-starting the application (i.e. the server) drops ALL database tables/data and re-populates them from the JSON files provided (this was done to simplify start up for you, I would never do this in a real application)
-- Typically the `.env` file is not committed to the repo, only the `.env.example` file is included. However, I created the `.env` file and committed it to make the setup easier for you (similarly, `.env.test` is included to run the automated local tests)
+- Typically the `.env` file is not committed to the repo, only the `.env.example` file is included. However, I created the `.env` file and committed it to make the setup easier for you
 - I assumed that the `dispatchTime` field in the request body is a JS Date() object (`new Date()`) string in ISO 8601 format (e.g. `2024-09-11T19:41:17.780Z`)
 - I assumed that the `dispatchTime` can be a past date as the original README only specified future date is invalid
 - I assumed from the original README that the provided response object given was only for the get route and NOT the post route
@@ -38,14 +39,15 @@
 - If you restart the API the database will reset. I did this so it was simple for you to start/stop the application.
 
 ## Installation/Usage
-1. Spin up local docker environment: run script located at `./script/up_all` to bring up Postgres and API containers (API will start on `http://localhost:8000` unless you alter the `.env` file provided)
+1. Spin up local docker environment: run script located at `./script/up_all` to bring up Postgres and API containers (API will start on `http://localhost:8000` unless you alter the `.env` file provided) (NOTE: you will need docker installed)
 2. Swagger docs available at: `http://localhost:8000/api/docs/`
 3. I have included postman scripts located in the `./postman/` directory. Feel free to use these to test the API or use any other method you wish
-4. Automated tests can be run via `npm install` (Node verison 22.8.0) and `npm run test` (`.env.test` file is included and required to run the tests as that is how the tests connect to Postgres)
+4. Automated tests can be run via `npm install` (Node verison 22.8.0) and `npm run test`
+  - NOTE: the tests rely on the 2 containers running (API and Postgres). The data in the tables will affect the tests. This was done to save time, ideally the tests would have a separate DB and separate API spun up for them.
 
 ## Dependencies
 | Package | Version |
 |---|---|
 | NodeJS | 22.8.0 |
 | Express | ^4.19.2 |
-
+| Docker | 24.0.1 |

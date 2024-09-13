@@ -6,7 +6,9 @@
   "scripts": {
     "start": "ts-node src/soilflo/app.ts",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha -r ts-node/register --timeout 25000 'src/soilflo/tests/**/*.ts'",
+    "itest": "mocha -r ts-node/register --timeout 25000 'src/soilflo/tests/integration/**/*.ts'",
+    "utest": "mocha -r ts-node/register --timeout 25000 'src/soilflo/tests/unit/**/*.ts'"
   },
   "keywords": [],
   "author": "",
@@ -24,7 +26,7 @@
     "@eslint/js": "^9.9.1",
     "@types/chai": "^4.3.19",
     "@types/express": "^4.17.21",
-    "@types/mocha": "^10.0.7",
+    "@types/mocha": "^10.0.8",
     "@types/node": "^22.5.4",
     "@types/pg": "^8.11.8",
     "@types/sequelize": "^4.28.20",
@@ -34,11 +36,11 @@
     "@typescript-eslint/eslint-plugin": "^8.4.0",
     "@typescript-eslint/parser": "^8.4.0",
     "axios": "^1.7.7",
-    "chai": "^4.3.19",
+    "chai": "^4.5.0",
     "eslint": "^9.9.1",
     "globals": "^15.9.0",
     "mocha": "^10.7.3",
-    "sinon": "^18.0.0",
+    "sinon": "^18.0.1",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.5.4",
