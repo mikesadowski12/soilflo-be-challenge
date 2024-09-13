@@ -11,7 +11,7 @@
 - I assumed from the original README that the provided response object given was only for the get route and NOT the post route
 - I assumed that the `dispatchTime` in the response object is also a JS Date() object (`new Date()`) string in ISO 8601 format (e.g. `2024-09-11T19:41:17.780Z`)
 - Although not specified in the original README, I included pagination for the GET tickets route. It requires you to pass both the `pageNumber` and `pageSize` query parameters together or the API throws a 400 if one is missing. Otherwise it just fetches all data. I am not sure which method you preferred because it was not required to paginate but I think an API like this should have pagination.
-- I assumed for the GET route that the ordering of the tickets does not matter. I return them in the REVERSE order that they were added into the DB (highest ticket number first)
+- I assumed for the GET route that the ordering of the tickets does not matter. I order them by the createdAt column, the latest/newest ticket first (descending)
 
 ### Summary
 - Tickets for a truck can be created by hitting the POST route `http://localhost:8000/api/v1/trucks/:truckId/tickets` with a request body in the structure of:
@@ -39,7 +39,7 @@
 - If you restart the API the database will reset. I did this so it was simple for you to start/stop the application. (NOTE: if you need to restart the API container, I have a script located at `./script/restart <container name>`)
 
 ## Installation/Usage
-1. Spin up local docker environment: run `docker compose up` (or `docker-compose up` if on older version of docker compose) to bring up Postgres and API containers (API will start on `http://localhost:8000` unless you alter the `.env` file provided) (NOTE: you will need docker installed) (NOTE #2: When starting the containers for the first time, sometimes I get an error in the API container logs that it cannot connect to Postgres. Maybe on first load Postgres is slow and the container doesn't start in time? Doing a `docker compose down` and another `docker compose up` fixes it for me)
+1. Spin up local docker environment: run `docker compose up` (or `docker-compose up` if on older version of docker compose) to bring up Postgres and API containers. It will take a few seconds for Postgres to populate the data. (API will start on `http://localhost:8000` unless you alter the `.env` file provided) (NOTE: you will need docker installed) (NOTE #2: When starting the containers for the first time, sometimes I get an error in the API container logs that it cannot connect to Postgres. Maybe on first load Postgres is slow and the container doesn't start in time? Doing a `docker compose down` and another `docker compose up` fixes it for me)
 2. Swagger docs available at: `http://localhost:8000/api/docs/`
 3. I have included postman scripts located in the `./postman/` directory. Feel free to use these to test the API or use any other method you wish
 4. Automated tests can be run via `npm install` (Node verison 22.8.0) and `npm run test`

@@ -128,6 +128,7 @@ class Postgres extends PostgresConnector {
           },
         ],
         attributes: [[Sequelize.fn('MAX', Sequelize.col('Ticket.number')), 'number']],
+        group: ['Ticket.createdAt', 'DESC'],
         raw: true, // use raw result to prevent group by error
       });
       return result && result.number ? parseInt(result.number) : 0;
