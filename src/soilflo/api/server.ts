@@ -9,7 +9,7 @@ import {
   JsonResponse,
   DateRange,
 } from '../../common';
-import { type Kernel, type ApiTicket, type ApiQuery, validateDispatchTimeUniqueness } from '../kernel';
+import { type Kernel, type ApiTicket, type ApiQuery, validateDispatchTimeUniqueness, validateTicketsRequestBody } from '../kernel';
 import type { Backend } from '../backend';
 
 class Api extends HttpServer {
@@ -39,21 +39,23 @@ class Api extends HttpServer {
       try {
         const { body, params } = request;
         if (params && params.truckId) {
-          truckId = params.truckId;
+          truckId = parseInt(params.truckId);
         }
         if (body && body.tickets) {
           rawTickets = body.tickets;
         }
 
-        if (!truckId) {
-          throw new BadRequestError({}, 'Truck ID was not provided');
+        if (!truckId || isNaN(truckId)) {
+          throw new BadRequestError({}, 'Truck ID was not provided or not an integer');
         }
 
-        if (!rawTickets || rawTickets.length < 1) {
+        if (!rawTickets || !Array.isArray(rawTickets) || rawTickets.length < 1) {
           throw new BadRequestError({}, 'List of tickets was not provided');
         }
+        validateTicketsRequestBody(rawTickets)
 
-        const truck = await this.kernel.getTruckHandler(logger, parseInt(truckId));
+
+        const truck = await this.kernel.getTruckHandler(logger, truckId);
         const tickets = await Promise.all(
           rawTickets.map(({ material, dispatchTime }) => this.kernel.getTicketHandler(logger, truck, dispatchTime, material))
         );
@@ -70,7 +72,7 @@ class Api extends HttpServer {
         return handler.call(this, {
           ...request,
           logger,
-          truckId: parseInt(truckId),
+          truckId,
           tickets,
         });
       } catch (error) {
@@ -137,6 +139,11 @@ class Api extends HttpServer {
       await this.kernel.saveTickets(truckId, tickets);
       return new EmptyResponse();
     } catch (error) {
+      if (error instanceof BadRequestError) {
+        logger.error({ error }, 'Database error occurred from bad values');
+        return new JsonResponse({ error: error.message }, { status: 400 });
+      }
+
       if (error instanceof ConflictError) {
         logger.error({ error }, 'Dispatch times are not unique for the creation of the requested tickets');
         return new JsonResponse({ error: error.message }, { status: 409 });

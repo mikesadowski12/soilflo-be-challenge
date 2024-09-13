@@ -1,7 +1,6 @@
 import { ApiError, ILogger } from '../../../common';
 
 import type { Kernel } from '../kernel';
-import { validateDispatchTime } from '../utils';
 import type { ApiTruck } from './truck';
 
 class Ticket {
@@ -34,8 +33,6 @@ class ApiTicket extends Ticket {
     this.dispatchTime = dispatchTime;
     this.material = material;
     this.number = number;
-
-    validateDispatchTime(this.dispatchTime);
   }
 
   getDispatchTime(): string {

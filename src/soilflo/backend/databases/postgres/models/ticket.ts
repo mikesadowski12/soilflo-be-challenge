@@ -1,6 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 
 import { Truck } from './truck';
+import { materials } from '../../../../kernel';
 
 class Ticket extends Model {
   public id!: number;
@@ -32,7 +33,7 @@ const schema = {
     allowNull: false,
   },
   material: {
-    type: DataTypes.ENUM('Soil'),
+    type: DataTypes.ENUM(...materials),
     allowNull: false,
   },
   number: {

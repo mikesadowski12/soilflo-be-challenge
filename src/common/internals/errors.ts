@@ -3,6 +3,7 @@ type ErrorObject = {
   error?: unknown,
   method?: string,
   time?: string,
+  material? : string,
 }
 
 class AbstractMethod extends Error {
