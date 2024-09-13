@@ -6,18 +6,41 @@ import { expect } from 'chai';
 describe('GET Tickets Integration Tests', () => {
   const baseURL: string = 'http://localhost:8000';
 
+  async function createTicket(truckId: number, dispatchTime: string) {
+    const ticket1 = { dispatchTime, material: 'Soil' };
+    const response = await axios.post(`${baseURL}/api/v1/trucks/${truckId}/tickets`, { tickets: [ticket1] });
+    expect(response).to.have.property('status', 200);
+    expect(response).to.have.property('statusText', 'OK');
+    expect(response).to.have.property('data');
+    expect(response.data).to.equal('');
+  }
+
   before(async () => {});
 
   after(async () => {});
 
   describe('Success (200) response', () => {
+    before(async () => {
+      await createTicket(1, '1999-09-11T19:41:17.780Z');
+    });
+
     it('should return a JSON response with a message', async () => {
       const response = await axios.get(`${baseURL}/api/v1/tickets`);
       expect(response).to.have.property('status', 200);
       expect(response).to.have.property('statusText', 'OK');
       expect(response).to.have.property('data');
-      expect(response.data).to.have.property('greeting', 'Hello!');
+      expect(response.data).to.have.property('tickets');
+      expect(response.data.tickets).to.be.an('array');
+      expect(response.data.tickets.length).to.be.at.least(1);
+      const ticket = response.data.tickets[0];
+      expect(ticket).to.have.property('siteName');
+      expect(ticket).to.have.property('truckLicensePlate');
+      expect(ticket).to.have.property('number');
+      expect(ticket).to.have.property('dispatchTime');
+      expect(ticket).to.have.property('material');
     });
+
+    // Lots more tests to test each filter/filter combinations
   });
 
   describe('Bad request (400) errors', () => {
