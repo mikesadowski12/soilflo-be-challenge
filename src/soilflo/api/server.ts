@@ -189,6 +189,12 @@ class Api extends HttpServer {
           }
         }
 
+        if (dateRange && dateRange.startDate && dateRange.endDate) {
+          if (dateRange.startDate.getTime() >= dateRange.endDate.getTime()) {
+            throw new BadRequestError({}, '\'startDate\' query parameter must be before \'endDate\' query parameter');
+          }
+        }
+
         if (query && query.pageNumber) {
           pageNumber = parseInt(query.pageNumber);
           if (isNaN(pageNumber)) {

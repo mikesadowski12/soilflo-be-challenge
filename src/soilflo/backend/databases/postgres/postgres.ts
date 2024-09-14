@@ -72,6 +72,7 @@ class Postgres extends PostgresConnector {
         ],
         ...(limit !== undefined && { limit }),
         ...(offset !== undefined && { offset }),
+        order: [['createdAt', 'DESC']],
       });
 
       return tickets.map(ticket => ({
@@ -128,7 +129,6 @@ class Postgres extends PostgresConnector {
           },
         ],
         attributes: [[Sequelize.fn('MAX', Sequelize.col('Ticket.number')), 'number']],
-        group: ['Ticket.createdAt', 'DESC'],
         raw: true, // use raw result to prevent group by error
       });
       return result && result.number ? parseInt(result.number) : 0;
