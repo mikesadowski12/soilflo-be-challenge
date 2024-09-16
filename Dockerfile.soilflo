@@ -16,8 +16,10 @@ COPY ./data/*.json ./data/
 
 # Install and set up the wait-for-it.sh script to wait for Postgres
 COPY ./script/wait-for-it.sh ./script/
-RUN apt-get update && apt-get install -y postgresql-client
+RUN apt-get update && apt-get install -y postgresql-client dos2unix
 RUN chmod +x ./script/wait-for-it.sh
+# dos2unix fixes line endings for Windows build for the .sh file (it cannot run on windows without this......)
+RUN dos2unix ./script/wait-for-it.sh
 
 RUN npm install -g typescript
 
