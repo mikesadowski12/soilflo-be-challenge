@@ -96,7 +96,7 @@ class Api extends HttpServer {
 
   /**
    * @swagger
-   * /api/v1/tickets/:truckId:
+   * /api/v1/trucks/:truckId/tickets:
    *   post:
    *     summary: Save a list of tickets
    *     description: Save a list tickets to the system for a single truck
