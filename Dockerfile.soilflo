@@ -14,9 +14,14 @@ COPY src/common ./src/common
 COPY src/soilflo ./src/soilflo
 COPY ./data/*.json ./data/
 
+# Install and set up the wait-for-it.sh script to wait for Postgres
+COPY ./script/wait-for-it.sh ./script/
+RUN apt-get update && apt-get install -y postgresql-client
+RUN chmod +x ./script/wait-for-it.sh
+
 RUN npm install -g typescript
 
 RUN npm run build
 RUN ls -al dist
 
-CMD ["node", "dist/soilflo/app.js"]
+CMD ["./script/wait-for-it.sh", "soilflo-postgres", "--", "node", "dist/soilflo/app.js"]
